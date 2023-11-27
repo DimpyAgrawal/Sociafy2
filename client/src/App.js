@@ -20,7 +20,6 @@ function App() {
           <Route exact path='/post' element={<Post />} />
           <Route exact path='/profile' element={<Profile />} />
           <Route exact path='/createpost' element={<CreatePost />} />
-
         </Routes>
       </BrowserRouter>
       <ToastContainer/>

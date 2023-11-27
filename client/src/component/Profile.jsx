@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import ProfilePic from './ProfilePic';
 
-export default function TemProfile() {
+export default function Profile() {
     const [userData, setUserData] = useState(null); // Initialize userData with null or an initial value
     const token = localStorage.getItem('token').replace(/^"(.*)"$/, '$1');
 

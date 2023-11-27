@@ -1,11 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState ,useRef} from 'react';
-
+import { useInRouterContext } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function ProfilePic({changeProfile}) {
   const [image, setImage] = useState('');
   const [url,setUrl] = useState(null);
-  
+  const notify1 = () => toast.success("Photo uploaded successfully");
+  const notify4 = (msg) => toast.error(msg);
 
   const submitImage = () => {
     const formData = new FormData();
@@ -15,13 +18,34 @@ export default function ProfilePic({changeProfile}) {
 
     axios.post('https://api.cloudinary.com/v1_1/dtjc6fasp/image/upload', formData)
       .then((response) => {
-        console.log(response.data);
+        console.log(response.data.url);
         // Perform any necessary actions after image upload
+        setUrl(response.data.url);
       })
       .catch((error) => {
         console.error(error);
       });
   };
+
+
+// const UpdateProfilePicture=()=>{
+//   try{
+//     const response = await axios.post('http://localhost:8080/setImageToDB',{
+//       headers:{
+//         Authorization: `Bearer ${token}`,
+//       }
+      
+//     });
+//     const user = response.data.user;
+//     console.log(user);
+//     setUrl(user);
+//   } catch(error){
+//     console.log({message : error});
+//   }
+
+
+// }
+
   useEffect(()=>{
     if(image)  submitImage();   //when image is available tbhi image will save in the cloudinary
   },[image]);  // mere according set image honi chahiye
@@ -53,9 +77,6 @@ export default function ProfilePic({changeProfile}) {
  
   };
 
-  
-
-
 
   useEffect(()=>{
     if(url) saveImageInDB();
@@ -69,7 +90,8 @@ export default function ProfilePic({changeProfile}) {
           
           <input type='file' onChange={(e) => setImage(e.target.files[0])}  ref={hiddenFileInput} />
           {/* <button onClick={submitImage}>Upload</button> */}
-          <button onClick={handleClick}>Upload</button>
+          <button onClick={handleClick}>Upload </button>
+          {notify1()}
 
           <button onClick={()=>{
             setUrl(null)
