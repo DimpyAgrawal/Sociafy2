@@ -9,13 +9,13 @@ const jwtDecode = require('jwt-decode')
 const authentication = require('../middleware/middleware')
 
 
-
+ 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(bodyParser.json());
 
 
 router.post("/register", async (req, res) => {
-    console.log("register");
+    console.log("register"); 
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
         return res.send({ error: "Fill Complete details" })
@@ -51,11 +51,12 @@ router.post("/loginUser", async (req, res) => {
     if (!user) {
         return res.json({ error: "User Not found" });
     }
+    console.log(user);
     if (await bcrypt.compare(password, user.password)) {
         console.log(user);
         const token = jwt.sign({email: user.email,name: user.name, id:user._id}, process.env.JWT_SECRET)
         if (res.status(201)) {
-            return res.json({ status: "ok", message: "Login Successfully", data: token });
+            return res.json({ status: "ok", message: "Login Successfully", data: token, user:user });
         } else {
             return res.json({ error: "error" });
         }
@@ -63,33 +64,40 @@ router.post("/loginUser", async (req, res) => {
     res.json({ status: "error", error: "Invalid Authentication" });
 })
 
-router.get('/getProfiteData',authentication,async(req,res)=>{
-    console.log("get profile");
-    const {email} = req.user;
-    try{
-        const user = await User.findOne({email})
-       return res.json({user});
+router.get('/getProfiteData/:id', authentication, async (req, res) => {
+    const { id } = req.params;
+    console.log("get profile "+id);
+    try {
+        const user = await User.findById(id);
 
-    }catch(error){
-        res.status(400).send({ message: error });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
+        return res.json({ user });
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).send({ message: 'Internal server error' });
     }
-})
+});
+
+
+
 
 
 
 router.put('/setImageToDB', authentication, async (req, res) => {
-  console.log('Profile image API');
-
+  console.log('Profile image API ' +req.body.pic+" ");
+  
   try {
-    // Assuming 'Photo' is the field in the User model to store the image URL or data
-    const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+      const updatedUser = await User.findByIdAndUpdate(req.user._id, {
       $set: { Photo: req.body.pic }
-    }, { new: true }); // To return the updated user after the update
-
+    }, { new: true }); 
+    
     if (!updatedUser) {
-      return res.status(404).json({ message: 'User not found' });
+        return res.status(404).json({ message: 'User not found' });
     }
+    // console.log('User ID:', req.user._id);
 
     return res.status(200).json({ message: 'Profile image updated successfully', user: updatedUser });
   } catch (error) {

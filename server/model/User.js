@@ -20,12 +20,12 @@ const userSchema = new mongoose.Schema({
         type : String,
         require : true
     },
-    photo:{
-        type : String,
-    },
+    Photo: {
+        type: String,
+      },
     
-    followers:[{type:ObjectId,ref:"User"}],
-    following:[{type:ObjectId,ref:"User"}]
+    followers:[{type:ObjectId,ref:"USER"}],
+    following:[{type:ObjectId,ref:"USER"}]
 })
 
 module.exports = mongoose.model('USER',userSchema);

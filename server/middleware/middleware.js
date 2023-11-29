@@ -10,7 +10,7 @@ const authenticateToken = async (req, res, next) => {
     } 
 
     const token = authHeader.split(' ')[1];
-    console.log(token);
+    // console.log(token);
 
     if (!token) {
         return res.status(401).json({ error: 'No token provided' });
@@ -18,7 +18,6 @@ const authenticateToken = async (req, res, next) => {
     try {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("tfgyfg");
         
         const { email } = decoded; // Extract email from decoded token payload
         console.log(email);
@@ -28,7 +27,6 @@ const authenticateToken = async (req, res, next) => {
         if (!user) {
             return res.status(401).json({ error: 'User not found' });
         }
-        console.log("0gtujjjjjjjjjjjjj");
         console.log(user);
     //    req.token = token;
         req.user = user;
